@@ -8,8 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan({"com.crm.file", "com.crm.shared-lib"})
 public class FileServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FileServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FileServiceApplication.class, args);
+    }
 
 }
