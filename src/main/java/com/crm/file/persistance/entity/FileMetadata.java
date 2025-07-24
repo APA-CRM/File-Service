@@ -39,7 +39,7 @@ public class FileMetadata {
     @PrimaryKeyJoinColumn
     private FileContent fileContent;
 
-    @OneToMany(mappedBy = "parentFile")
+    @OneToMany(mappedBy = "parentFile", orphanRemoval = true)
     private List<FileMetadata> childrenFiles;
 
     @CreatedDate
