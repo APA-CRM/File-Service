@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan({"com.crm.file", "com.crm.shared-lib"})
+@ComponentScan({"com.crm.file", "com.crm.sharedlib"})
 public class FileServiceApplication {
 
     public static void main(String[] args) {

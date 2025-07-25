@@ -25,6 +25,6 @@ public class CreateFileRequest {
 
     private UUID parentFileId;
 
-    private MultipartFile multipartFile;
+    private MultipartFile content;
 
 }

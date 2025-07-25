@@ -20,6 +20,6 @@ public class UpdateFileRequest {
 
     private UUID parentFileId;
 
-    private MultipartFile multipartFile;
+    private MultipartFile content;
 
 }

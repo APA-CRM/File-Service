@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -21,8 +20,6 @@ public class FileResponse {
     private String name;
 
     private FileType fileType;
-
-    private List<FileResponse> childFiles;
 
     private Instant createdAt;
 

@@ -3,8 +3,11 @@ package com.crm.file.controller;
 import com.crm.file.dto.request.CreateFileRequest;
 import com.crm.file.dto.request.UpdateFileRequest;
 import com.crm.file.dto.response.FileResponse;
+import com.crm.file.dto.response.FileWithChildrenResponse;
 import com.crm.file.facade.FileFacade;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,19 +21,24 @@ public class FileController {
     private final FileFacade facade;
 
     @GetMapping("{fileId}")
-    public FileResponse getFile(@PathVariable("fileId") UUID fileId) {
+    public FileWithChildrenResponse getFile(@PathVariable("fileId") UUID fileId) {
         return facade.getFile(fileId);
     }
 
+    @GetMapping(value = "{fileId}/content", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public Resource getFileContent(@PathVariable("fileId") UUID fileId) {
+        return facade.getFileContent(fileId);
+    }
+
     @PostMapping
-    public FileResponse createFile(@RequestBody CreateFileRequest request) {
+    public FileResponse createFile(@ModelAttribute CreateFileRequest request) {
         return facade.createFile(request);
     }
 
     @PatchMapping("{fileId}")
-    public FileResponse updateFile(
+    public FileWithChildrenResponse updateFile(
             @PathVariable("fileId") UUID fileId,
-            @RequestBody UpdateFileRequest request
+            @ModelAttribute UpdateFileRequest request
     ) {
         return facade.updateFile(fileId, request);
     }

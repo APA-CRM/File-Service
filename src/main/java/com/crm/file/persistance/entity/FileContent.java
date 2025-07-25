@@ -21,15 +21,11 @@ import java.util.UUID;
 public class FileContent {
 
     @Id
-    @Column(name = "file_id")
-    private UUID id;
+    private UUID fileMetadataId;
 
-    @OneToOne(
-            cascade = CascadeType.ALL, optional = false,
-            orphanRemoval = true, fetch = FetchType.LAZY
-    )
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     @MapsId
-    @JoinColumn(name = "file_id")
+    @JoinColumn(name = "fileMetadataId")
     private FileMetadata metadata;
 
     @Lob

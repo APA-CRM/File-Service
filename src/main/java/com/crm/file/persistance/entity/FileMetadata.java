@@ -35,7 +35,10 @@ public class FileMetadata {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private FileMetadata parentFile;
 
-    @OneToOne(mappedBy = "metadata")
+    @OneToOne(
+            mappedBy = "metadata", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
     @PrimaryKeyJoinColumn
     private FileContent fileContent;
 
