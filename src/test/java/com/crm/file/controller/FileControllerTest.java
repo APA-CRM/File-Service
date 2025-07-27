@@ -38,6 +38,7 @@ class FileControllerTest extends BaseIntegrationTest {
                 .body("name", notNullValue())
                 .body("fileType", is(FileType.DIRECTORY.name()))
                 .body("childrenFiles", hasSize(1))
+                .body("fileExtension", nullValue())
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());
     }
@@ -54,7 +55,6 @@ class FileControllerTest extends BaseIntegrationTest {
                 .then()
                 .log().all()
                 .assertThat()
-                .contentType(ContentType.BINARY)
                 .statusCode(HttpStatus.OK.value());
     }
 
@@ -95,6 +95,7 @@ class FileControllerTest extends BaseIntegrationTest {
                 .body("id", notNullValue())
                 .body("name", is("Created file"))
                 .body("fileType", is(FileType.FILE.name()))
+                .body("fileExtension", notNullValue())
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());
     }
@@ -139,6 +140,7 @@ class FileControllerTest extends BaseIntegrationTest {
                 .body("id", notNullValue())
                 .body("name", is("Created directory"))
                 .body("fileType", is(FileType.DIRECTORY.name()))
+                .body("fileExtension", nullValue())
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());
     }
@@ -181,6 +183,31 @@ class FileControllerTest extends BaseIntegrationTest {
                 .body("id", notNullValue())
                 .body("name", is("Update directory"))
                 .body("fileType", is(FileType.DIRECTORY.name()))
+                .body("fileExtension", nullValue())
+                .body("createdAt", notNullValue())
+                .body("updatedAt", notNullValue());
+    }
+
+    @Test
+    @DisplayName("Update file when 'File' type expected success")
+    @SneakyThrows
+    public void updateFileWhenFileTypeExpectedSuccess() {
+        UUID fileId = UUID.fromString("5682d1e7-3eb4-4e41-923a-7b7abc0239c3");
+
+        given()
+                .contentType(ContentType.MULTIPART)
+                .when()
+                .multiPart("name", "Update file")
+                .multiPart("content", new ClassPathResource("image/file.png").getFile())
+                .patch(BASE_URI + "/{fileId}", fileId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("id", notNullValue())
+                .body("name", is("Update file"))
+                .body("fileType", is(FileType.FILE.name()))
+                .body("fileExtension", notNullValue())
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());
     }

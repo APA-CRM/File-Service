@@ -2,6 +2,7 @@ package com.crm.file.service;
 
 import com.crm.file.dto.request.CreateFileRequest;
 import com.crm.file.dto.request.UpdateFileRequest;
+import com.crm.file.enums.FileExtension;
 import com.crm.file.enums.FileType;
 import com.crm.file.mapper.FileMetadataMapper;
 import com.crm.file.persistance.entity.FileContent;
@@ -12,8 +13,6 @@ import com.crm.sharedlib.exception.ConflictException;
 import com.crm.sharedlib.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,16 +35,14 @@ public class FileService {
                 .orElseThrow(() -> new NotFoundException("File is not found"));
     }
 
-    public Resource getFileContent(UUID id) {
+    public FileMetadata getFileContent(UUID id) {
         FileMetadata metadata = getFileOrThrowException(id);
 
         if (metadata.getFileType() == FileType.DIRECTORY) {
             throw new ConflictException("This file is directory");
         }
 
-        FileContent content = metadata.getFileContent();
-
-        return new ByteArrayResource(content.getContent());
+        return metadata;
     }
 
     @Transactional
@@ -54,8 +51,12 @@ public class FileService {
 
         FileMetadata metadata = metadataMapper.toEntity(request);
 
+
         if (request.getFileType() == FileType.FILE) {
             createFileContent(metadata, request.getContent());
+            metadata.setFileExtension(
+                    getFileExtension(request.getContent().getOriginalFilename())
+            );
         }
 
         if (nonNull(request.getParentFileId())) {
@@ -67,6 +68,7 @@ public class FileService {
     }
 
     @Transactional
+    @SneakyThrows
     public FileMetadata updateFile(UUID id, UpdateFileRequest request) {
         FileMetadata metadata = getFileOrThrowException(id);
 
@@ -75,7 +77,10 @@ public class FileService {
         metadata = metadataMapper.updateEntity(request, metadata);
 
         if (metadata.getFileType() == FileType.FILE) {
-            createFileContent(metadata, request.getContent());
+            metadata.getFileContent().setContent(request.getContent().getBytes());
+            metadata.setFileExtension(
+                    getFileExtension(request.getContent().getOriginalFilename())
+            );
         }
 
         if (nonNull(request.getParentFileId())) {
@@ -118,6 +123,25 @@ public class FileService {
                 throw new BadRequestException("File must have a content");
             }
         }
+    }
+
+    private FileExtension getFileExtension(String fileName) {
+        if (isNull(fileName)) {
+            throw new BadRequestException("File doesn't have a name");
+        }
+
+        // + 1 because we need file extension name without a dot
+        String fileExtensionName = fileName.substring(fileName.indexOf(".") + 1);
+
+        for (FileExtension extension : FileExtension.values()) {
+            for (String extensionName : extension.getExtensions()) {
+                if (fileExtensionName.equals(extensionName)) {
+                    return extension;
+                }
+            }
+        }
+
+        throw new BadRequestException("Unsupported file extension");
     }
 
 }

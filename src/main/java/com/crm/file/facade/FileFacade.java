@@ -9,7 +9,12 @@ import com.crm.file.persistance.entity.FileMetadata;
 import com.crm.file.service.FileService;
 import com.crm.sharedlib.annotations.Facade;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -29,8 +34,19 @@ public class FileFacade {
         return metadataMapper.toDtoWithChildren(metadata);
     }
 
-    public Resource getFileContent(UUID id) {
-        return fileService.getFileContent(id);
+    @Transactional(readOnly = true)
+    public ResponseEntity<Resource> getFileContent(UUID id) {
+        FileMetadata metadata = fileService.getFileContent(id);
+
+        byte[] bytes = metadata.getFileContent().getContent();
+        ByteArrayResource resource = new ByteArrayResource(bytes);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(
+                MediaType.parseMediaType(metadata.getFileExtension().getMimeType())
+        );
+
+        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
     }
 
     public FileResponse createFile(CreateFileRequest request) {

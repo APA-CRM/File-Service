@@ -7,7 +7,6 @@ import com.crm.file.dto.response.FileWithChildrenResponse;
 import com.crm.file.facade.FileFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +24,8 @@ public class FileController {
         return facade.getFile(fileId);
     }
 
-    @GetMapping(value = "{fileId}/content", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public Resource getFileContent(@PathVariable("fileId") UUID fileId) {
+    @GetMapping("{fileId}/content")
+    public ResponseEntity<Resource> getFileContent(@PathVariable("fileId") UUID fileId) {
         return facade.getFileContent(fileId);
     }
 

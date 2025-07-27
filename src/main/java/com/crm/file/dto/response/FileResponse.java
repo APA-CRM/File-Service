@@ -1,5 +1,6 @@
 package com.crm.file.dto.response;
 
+import com.crm.file.enums.FileExtension;
 import com.crm.file.enums.FileType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,8 @@ public class FileResponse {
     private String name;
 
     private FileType fileType;
+
+    private FileExtension fileExtension;
 
     private Instant createdAt;
 

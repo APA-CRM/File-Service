@@ -1,5 +1,6 @@
 package com.crm.file.persistance.entity;
 
+import com.crm.file.enums.FileExtension;
 import com.crm.file.enums.FileType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,9 @@ public class FileMetadata {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private FileType fileType;
+
+    @Enumerated(EnumType.STRING)
+    private FileExtension fileExtension;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private FileMetadata parentFile;
