@@ -1,5 +1,6 @@
 package com.crm.file.dto.request;
 
+import com.crm.file.constraint.FileSizeConstraint;
 import com.crm.file.enums.FileType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,7 @@ public class CreateFileRequest {
 
     private UUID parentFileId;
 
+    @FileSizeConstraint
     private MultipartFile content;
 
 }

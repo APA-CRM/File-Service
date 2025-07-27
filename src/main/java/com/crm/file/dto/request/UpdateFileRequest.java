@@ -1,5 +1,6 @@
 package com.crm.file.dto.request;
 
+import com.crm.file.constraint.FileSizeConstraint;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class UpdateFileRequest {
 
     private UUID parentFileId;
 
+    @FileSizeConstraint
     private MultipartFile content;
 
 }

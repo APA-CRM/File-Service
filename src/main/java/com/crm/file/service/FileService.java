@@ -12,7 +12,6 @@ import com.crm.sharedlib.exception.ConflictException;
 import com.crm.sharedlib.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -28,14 +27,9 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class FileService {
 
-    private static final int BYTES_PER_MB = 1_048_576;
-
     private final FileMetadataRepository metadataRepository;
 
     private final FileMetadataMapper metadataMapper;
-
-    @Value("${app.file.max-size}")
-    private Integer fileMaxSize;
 
     public FileMetadata getFileOrThrowException(UUID id) {
         return metadataRepository.findById(id)
@@ -118,18 +112,12 @@ public class FileService {
     }
 
     @SneakyThrows
-    // TODO: Move to a validator
     private void validate(FileType fileType, MultipartFile multipartFile) {
         if (fileType == FileType.FILE) {
             if (isNull(multipartFile) || multipartFile.isEmpty()) {
                 throw new BadRequestException("File must have a content");
             }
-
-            if (multipartFile.getBytes().length > fileMaxSize) {
-                throw new BadRequestException("Max size of file is %d MB".formatted(fileMaxSize / BYTES_PER_MB));
-            }
         }
-
     }
 
 }
