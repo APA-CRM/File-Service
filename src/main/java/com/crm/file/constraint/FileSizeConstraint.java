@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface FileSizeConstraint {
 
-    String message() default "Invalid sign-up request";
+    String message() default "Invalid size of file";
 
     Class<?>[] groups() default {};
 
