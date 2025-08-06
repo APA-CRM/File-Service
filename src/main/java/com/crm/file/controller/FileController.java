@@ -5,6 +5,7 @@ import com.crm.file.dto.request.UpdateFileRequest;
 import com.crm.file.dto.response.FileResponse;
 import com.crm.file.dto.response.FileWithChildrenResponse;
 import com.crm.file.facade.FileFacade;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -30,14 +31,14 @@ public class FileController {
     }
 
     @PostMapping
-    public FileResponse createFile(@ModelAttribute CreateFileRequest request) {
+    public FileResponse createFile(@Valid @ModelAttribute CreateFileRequest request) {
         return facade.createFile(request);
     }
 
     @PatchMapping("{fileId}")
     public FileWithChildrenResponse updateFile(
             @PathVariable("fileId") UUID fileId,
-            @ModelAttribute UpdateFileRequest request
+            @Valid @ModelAttribute UpdateFileRequest request
     ) {
         return facade.updateFile(fileId, request);
     }
