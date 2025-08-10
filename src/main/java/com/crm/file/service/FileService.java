@@ -68,6 +68,15 @@ public class FileService {
     }
 
     @Transactional
+    public FileMetadata createDefaultDirectory(String name) {
+        FileMetadata metadata = new FileMetadata();
+        metadata.setName(name);
+        metadata.setFileType(FileType.DIRECTORY);
+
+        return metadataRepository.save(metadata);
+    }
+
+    @Transactional
     @SneakyThrows
     public FileMetadata updateFile(UUID id, UpdateFileRequest request) {
         FileMetadata metadata = getFileOrThrowException(id);
