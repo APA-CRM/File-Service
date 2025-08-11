@@ -1,8 +1,9 @@
 package com.crm.file.controller.internal;
 
-import com.crm.file.dto.request.internal.CreateDefaultFileRequest;
-import com.crm.file.dto.response.FileResponse;
+
 import com.crm.file.facade.internal.InternalFileFacade;
+import com.crm.sharedlib.dto.request.CreateDefaultFileRequest;
+import com.crm.sharedlib.dto.response.FileIdResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class InternalFileController {
     private final InternalFileFacade facade;
 
     @PostMapping("/default")
-    public FileResponse createDefaultDirectory(
+    public FileIdResponse createDefaultDirectory(
             @Valid @RequestBody CreateDefaultFileRequest request
     ) {
         return facade.createDirectory(request.getName());

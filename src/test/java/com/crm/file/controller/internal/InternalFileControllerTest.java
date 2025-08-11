@@ -1,8 +1,7 @@
 package com.crm.file.controller.internal;
 
 import com.crm.file.BaseIntegrationTest;
-import com.crm.file.dto.request.internal.CreateDefaultFileRequest;
-import com.crm.file.enums.FileType;
+import com.crm.sharedlib.dto.request.CreateDefaultFileRequest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,12 +29,7 @@ class InternalFileControllerTest extends BaseIntegrationTest {
                 .log().all()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", notNullValue())
-                .body("name", is(request.getName()))
-                .body("fileType", is(FileType.DIRECTORY.name()))
-                .body("fileExtension", nullValue())
-                .body("createdAt", notNullValue())
-                .body("updatedAt", notNullValue());
+                .body("id", notNullValue());
 
     }
 
