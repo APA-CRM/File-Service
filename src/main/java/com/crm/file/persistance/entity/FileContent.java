@@ -23,13 +23,12 @@ public class FileContent {
     @Id
     private UUID fileMetadataId;
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @OneToOne(optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @MapsId
     @JoinColumn(name = "fileMetadataId")
     private FileMetadata metadata;
 
     @Lob
-    @Column(columnDefinition = "bytea")
     private byte[] content;
 
     @CreatedDate

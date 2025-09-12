@@ -5,6 +5,7 @@ import com.crm.file.dto.request.UpdateFileRequest;
 import com.crm.file.dto.response.FileResponse;
 import com.crm.file.dto.response.FileWithChildrenResponse;
 import com.crm.file.mapper.FileMetadataMapper;
+import com.crm.file.persistance.entity.FileContent;
 import com.crm.file.persistance.entity.FileMetadata;
 import com.crm.file.service.FileService;
 import com.crm.sharedlib.annotations.Facade;
@@ -29,21 +30,21 @@ public class FileFacade {
 
     @Transactional(readOnly = true)
     public FileWithChildrenResponse getFile(UUID id) {
-        FileMetadata metadata = fileService.getFileOrThrowException(id);
+        FileMetadata metadata = fileService.getFileMetadataOrThrowException(id);
 
         return metadataMapper.toDtoWithChildren(metadata);
     }
 
     @Transactional(readOnly = true)
     public ResponseEntity<Resource> getFileContent(UUID id) {
-        FileMetadata metadata = fileService.getFileContent(id);
+        FileContent content = fileService.getFileContent(id);
 
-        byte[] bytes = metadata.getFileContent().getContent();
+        byte[] bytes = content.getContent();
         ByteArrayResource resource = new ByteArrayResource(bytes);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(
-                MediaType.parseMediaType(metadata.getFileExtension().getMimeType())
+                MediaType.parseMediaType(content.getMetadata().getFileExtension().getMimeType())
         );
 
         return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);

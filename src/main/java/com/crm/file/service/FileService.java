@@ -2,11 +2,11 @@ package com.crm.file.service;
 
 import com.crm.file.dto.request.CreateFileRequest;
 import com.crm.file.dto.request.UpdateFileRequest;
-import com.crm.file.enums.FileExtension;
 import com.crm.file.enums.FileType;
 import com.crm.file.mapper.FileMetadataMapper;
 import com.crm.file.persistance.entity.FileContent;
 import com.crm.file.persistance.entity.FileMetadata;
+import com.crm.file.persistance.repository.FileContentRepository;
 import com.crm.file.persistance.repository.FileMetadataRepository;
 import com.crm.sharedlib.exception.BadRequestException;
 import com.crm.sharedlib.exception.ConflictException;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 import static java.util.Objects.isNull;
@@ -26,23 +27,31 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class FileService {
 
+    private final FileExtensionFactory fileExtensionFactory;
+
+    private final FileContentRepository contentRepository;
     private final FileMetadataRepository metadataRepository;
 
     private final FileMetadataMapper metadataMapper;
 
-    public FileMetadata getFileOrThrowException(UUID id) {
+    public FileMetadata getFileMetadataOrThrowException(UUID id) {
         return metadataRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("File is not found"));
     }
 
-    public FileMetadata getFileContent(UUID id) {
-        FileMetadata metadata = getFileOrThrowException(id);
+    public FileContent getFileContentOrThrowException(UUID id) {
+        return contentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("File is not found"));
+    }
 
-        if (metadata.getFileType() == FileType.DIRECTORY) {
+    public FileContent getFileContent(UUID id) {
+        FileContent content = getFileContentOrThrowException(id);
+
+        if (content.getMetadata().getFileType() == FileType.DIRECTORY) {
             throw new ConflictException("This file is directory");
         }
 
-        return metadata;
+        return content;
     }
 
     @Transactional
@@ -51,18 +60,17 @@ public class FileService {
 
         FileMetadata metadata = metadataMapper.toEntity(request);
 
+        setParentFile(metadata, request.getParentFileId());
 
         if (request.getFileType() == FileType.FILE) {
-            createFileContent(metadata, request.getContent());
+            FileContent content = createFileContent(metadata, request.getContent());
             metadata.setFileExtension(
-                    getFileExtension(request.getContent().getOriginalFilename())
+                    fileExtensionFactory.getFileExtension(request.getContent().getOriginalFilename())
             );
+
+            contentRepository.save(content);
         }
 
-        if (nonNull(request.getParentFileId())) {
-            FileMetadata parent = getParentOrThrowException(request.getParentFileId());
-            metadata.setParentFile(parent);
-        }
 
         return metadataRepository.save(metadata);
     }
@@ -79,22 +87,20 @@ public class FileService {
     @Transactional
     @SneakyThrows
     public FileMetadata updateFile(UUID id, UpdateFileRequest request) {
-        FileMetadata metadata = getFileOrThrowException(id);
-
-        validate(metadata.getFileType(), request.getContent());
+        FileMetadata metadata = getFileMetadataOrThrowException(id);
 
         metadata = metadataMapper.updateEntity(request, metadata);
 
-        if (metadata.getFileType() == FileType.FILE) {
-            metadata.getFileContent().setContent(request.getContent().getBytes());
-            metadata.setFileExtension(
-                    getFileExtension(request.getContent().getOriginalFilename())
-            );
-        }
+        setParentFile(metadata, request.getParentFileId());
 
-        if (nonNull(request.getParentFileId())) {
-            FileMetadata parent = getParentOrThrowException(request.getParentFileId());
-            metadata.setParentFile(parent);
+        if (metadata.getFileType() == FileType.FILE && nonNull(request.getContent())) {
+            FileContent content = getFileContentOrThrowException(id);
+            content.setContent(request.getContent().getBytes());
+            metadata.setFileExtension(
+                    fileExtensionFactory.getFileExtension(request.getContent().getOriginalFilename())
+            );
+
+            contentRepository.save(content);
         }
 
         return metadataRepository.save(metadata);
@@ -102,12 +108,19 @@ public class FileService {
 
     @Transactional
     public void deleteFile(UUID id, Boolean forceDelete) {
-        FileMetadata metadata = getFileOrThrowException(id);
+        FileMetadata metadata = getFileMetadataOrThrowException(id);
 
         if (!metadata.getChildrenFiles().isEmpty() && !forceDelete) {
             throw new ConflictException("Directory contains files");
         }
 
+        List<UUID> ids = metadata.getChildrenFiles()
+                .stream().map(FileMetadata::getId)
+                .toList();
+
+        contentRepository.deleteAllById(ids);
+
+        contentRepository.deleteById(id);
         metadataRepository.delete(metadata);
     }
 
@@ -117,12 +130,12 @@ public class FileService {
     }
 
     @SneakyThrows
-    private void createFileContent(FileMetadata metadata, MultipartFile multipartFile) {
+    private FileContent createFileContent(FileMetadata metadata, MultipartFile multipartFile) {
         FileContent content = new FileContent();
         content.setContent(multipartFile.getBytes());
         content.setMetadata(metadata);
 
-        metadata.setFileContent(content);
+        return content;
     }
 
     @SneakyThrows
@@ -134,23 +147,15 @@ public class FileService {
         }
     }
 
-    private FileExtension getFileExtension(String fileName) {
-        if (isNull(fileName)) {
-            throw new BadRequestException("File doesn't have a name");
-        }
-
-        // + 1 because we need file extension name without a dot
-        String fileExtensionName = fileName.substring(fileName.indexOf(".") + 1);
-
-        for (FileExtension extension : FileExtension.values()) {
-            for (String extensionName : extension.getExtensions()) {
-                if (fileExtensionName.equals(extensionName)) {
-                    return extension;
-                }
+    private void setParentFile(FileMetadata metadata, UUID parentId) {
+        if (nonNull(parentId)) {
+            FileMetadata parent = getParentOrThrowException(parentId);
+            if (parent.getFileType() == FileType.FILE) {
+                throw new ConflictException("Parent file has 'FILE' Type");
             }
-        }
 
-        throw new BadRequestException("Unsupported file extension");
+            metadata.setParentFile(parent);
+        }
     }
 
 }
