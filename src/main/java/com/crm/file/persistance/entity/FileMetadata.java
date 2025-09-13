@@ -36,17 +36,13 @@ public class FileMetadata {
     @Enumerated(EnumType.STRING)
     private FileExtension fileExtension;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private FileMetadata parentFile;
 
-    @OneToOne(
-            mappedBy = "metadata", fetch = FetchType.LAZY,
+    @OneToMany(
+            mappedBy = "parentFile", orphanRemoval = true,
             cascade = CascadeType.ALL
     )
-    @PrimaryKeyJoinColumn
-    private FileContent fileContent;
-
-    @OneToMany(mappedBy = "parentFile", orphanRemoval = true)
     private List<FileMetadata> childrenFiles;
 
     @CreatedDate

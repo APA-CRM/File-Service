@@ -121,6 +121,27 @@ class FileControllerTest extends BaseIntegrationTest {
     }
 
     @Test
+    @DisplayName("Create file when when parent has 'FILE' type expected conflict")
+    @SneakyThrows
+    public void createFileWhenParentHasFileTypeExpectedConflict() {
+        UUID parentFileId = UUID.fromString("5682d1e7-3eb4-4e41-923a-7b7abc0239c3");
+
+        given()
+                .contentType(ContentType.MULTIPART)
+                .when()
+                .multiPart("name", "Created file")
+                .multiPart("fileType", FileType.FILE)
+                .multiPart("parentFileId", parentFileId)
+                .multiPart("content", new ClassPathResource("image/file.png").getFile())
+                .post(BASE_URI)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.CONFLICT.value())
+                .body("message", is("Parent file has 'FILE' Type"));
+    }
+
+    @Test
     @DisplayName("Create file when `DIRECTORY` type expected success")
     @SneakyThrows
     public void createFileWhenDirectoryTypeExpectedSuccess() {
@@ -199,6 +220,29 @@ class FileControllerTest extends BaseIntegrationTest {
                 .when()
                 .multiPart("name", "Update file")
                 .multiPart("content", new ClassPathResource("image/file.png").getFile())
+                .patch(BASE_URI + "/{fileId}", fileId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("id", notNullValue())
+                .body("name", is("Update file"))
+                .body("fileType", is(FileType.FILE.name()))
+                .body("fileExtension", notNullValue())
+                .body("createdAt", notNullValue())
+                .body("updatedAt", notNullValue());
+    }
+
+    @Test
+    @DisplayName("Update file when content is not specified expected success")
+    @SneakyThrows
+    public void updateFileWhenContentIsNotSpecifiedExpectedSuccess() {
+        UUID fileId = UUID.fromString("5682d1e7-3eb4-4e41-923a-7b7abc0239c3");
+
+        given()
+                .contentType(ContentType.MULTIPART)
+                .when()
+                .multiPart("name", "Update file")
                 .patch(BASE_URI + "/{fileId}", fileId)
                 .then()
                 .log().all()
