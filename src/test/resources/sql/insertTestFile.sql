@@ -25,10 +25,10 @@ INSERT INTO file_content (
     created_at, updated_at
 ) VALUES
 (
-    '5682d1e7-3eb4-4e41-923a-7b7abc0239c3', FILE_READ('classpath:image/file.png'),
+    '5682d1e7-3eb4-4e41-923a-7b7abc0239c3', FILE_READ('classpath:image/validFile.png'),
     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
 ),
 (
-    '5682d1e7-3eb4-4e41-923a-7b7abc0239c4', FILE_READ('classpath:image/file.png'),
+    '5682d1e7-3eb4-4e41-923a-7b7abc0239c4', FILE_READ('classpath:image/validFile.png'),
     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
 );
