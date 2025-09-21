@@ -37,6 +37,7 @@ class FileControllerTest extends BaseIntegrationTest {
                 .body("id", is(fileId.toString()))
                 .body("name", notNullValue())
                 .body("fileType", is(FileType.DIRECTORY.name()))
+                .body("fullName", notNullValue())
                 .body("childrenFiles", hasSize(1))
                 .body("fileExtension", nullValue())
                 .body("createdAt", notNullValue())
@@ -55,6 +56,8 @@ class FileControllerTest extends BaseIntegrationTest {
                 .then()
                 .log().all()
                 .assertThat()
+                .contentType("image/jpeg")
+                .header("Content-Disposition", "attachment; filename=\"Employee`s_Photo.jpeg\"")
                 .statusCode(HttpStatus.OK.value());
     }
 
@@ -94,6 +97,7 @@ class FileControllerTest extends BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("id", notNullValue())
                 .body("name", is("Created file"))
+                .body("fullName", is("Created_file.png"))
                 .body("fileType", is(FileType.FILE.name()))
                 .body("fileExtension", notNullValue())
                 .body("createdAt", notNullValue())
@@ -160,6 +164,7 @@ class FileControllerTest extends BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("id", notNullValue())
                 .body("name", is("Created directory"))
+                .body("fullName", is("Created_directory"))
                 .body("fileType", is(FileType.DIRECTORY.name()))
                 .body("fileExtension", nullValue())
                 .body("createdAt", notNullValue())
@@ -204,6 +209,7 @@ class FileControllerTest extends BaseIntegrationTest {
                 .body("id", notNullValue())
                 .body("name", is("Update directory"))
                 .body("fileType", is(FileType.DIRECTORY.name()))
+                .body("fullName", is("Update_directory"))
                 .body("fileExtension", nullValue())
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());
@@ -227,6 +233,7 @@ class FileControllerTest extends BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("id", notNullValue())
                 .body("name", is("Update file"))
+                .body("fullName", is("Update_file.png"))
                 .body("fileType", is(FileType.FILE.name()))
                 .body("fileExtension", notNullValue())
                 .body("createdAt", notNullValue())
@@ -251,6 +258,7 @@ class FileControllerTest extends BaseIntegrationTest {
                 .body("id", notNullValue())
                 .body("name", is("Update file"))
                 .body("fileType", is(FileType.FILE.name()))
+                .body("fullName", is("Update_file.docx"))
                 .body("fileExtension", notNullValue())
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());

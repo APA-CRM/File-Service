@@ -12,10 +12,7 @@ import com.crm.sharedlib.annotations.Facade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -28,7 +25,7 @@ public class FileFacade {
 
     private final FileMetadataMapper metadataMapper;
 
-    @Transactional(readOnly = true)
+
     public FileWithChildrenResponse getFile(UUID id) {
         FileMetadata metadata = fileService.getFileMetadataOrThrowException(id);
 
@@ -38,16 +35,21 @@ public class FileFacade {
     @Transactional(readOnly = true)
     public ResponseEntity<Resource> getFileContent(UUID id) {
         FileContent content = fileService.getFileContent(id);
+        FileMetadata metadata = content.getMetadata();
 
         byte[] bytes = content.getContent();
         ByteArrayResource resource = new ByteArrayResource(bytes);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(
-                MediaType.parseMediaType(content.getMetadata().getFileExtension().getMimeType())
+                MediaType.parseMediaType(metadata.getFileExtension().getMimeType())
         );
+        headers.setContentDisposition(ContentDisposition
+                .attachment()
+                .filename(metadata.getFullName())
+                .build());
 
-        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
     public FileResponse createFile(CreateFileRequest request) {
@@ -56,7 +58,6 @@ public class FileFacade {
         return metadataMapper.toDto(metadata);
     }
 
-    @Transactional
     public FileWithChildrenResponse updateFile(UUID id, UpdateFileRequest request) {
         FileMetadata metadata = fileService.updateFile(id, request);
 
