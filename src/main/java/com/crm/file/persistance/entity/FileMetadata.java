@@ -29,6 +29,8 @@ public class FileMetadata {
 
     private String name;
 
+    private String fullName;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private FileType fileType;
@@ -40,8 +42,8 @@ public class FileMetadata {
     private FileMetadata parentFile;
 
     @OneToMany(
-            mappedBy = "parentFile", orphanRemoval = true,
-            cascade = CascadeType.ALL
+            mappedBy = "parentFile", fetch = FetchType.EAGER,
+            orphanRemoval = true, cascade = CascadeType.ALL
     )
     private List<FileMetadata> childrenFiles;
 
@@ -50,6 +52,17 @@ public class FileMetadata {
 
     @LastModifiedDate
     private Instant updatedAt;
+
+    @PrePersist
+    @PreUpdate
+    public void onCreateAndUpdate() {
+        if (fileType == FileType.DIRECTORY) {
+            fullName = name.replaceAll("\\s+", "_");
+        } else {
+            fullName = name.replaceAll("\\s+", "_")
+                    + "." + fileExtension.getExtensions()[0];
+        }
+    }
 
 }
 

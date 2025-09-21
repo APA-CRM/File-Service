@@ -20,6 +20,8 @@ public class FileResponse {
 
     private String name;
 
+    private String fullName;
+
     private FileType fileType;
 
     private FileExtension fileExtension;
