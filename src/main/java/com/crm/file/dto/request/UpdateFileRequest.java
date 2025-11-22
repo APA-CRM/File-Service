@@ -21,7 +21,7 @@ public class UpdateFileRequest {
 
     private UUID parentFileId;
 
-    @FileSizeConstraint
+    @FileSizeConstraint(maxSizeProperty = "app.file.max-size")
     private MultipartFile content;
 
 }

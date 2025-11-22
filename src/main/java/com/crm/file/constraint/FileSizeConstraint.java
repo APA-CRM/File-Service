@@ -23,4 +23,8 @@ public @interface FileSizeConstraint {
 
     Class<? extends Payload>[] payload() default {};
 
+    String maxSizeProperty();
+
+    boolean required() default false;
+
 }
