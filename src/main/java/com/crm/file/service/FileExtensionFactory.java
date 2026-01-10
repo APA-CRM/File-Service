@@ -1,7 +1,7 @@
 package com.crm.file.service;
 
 import com.crm.file.enums.FileExtension;
-import com.crm.sharedlib.exception.BadRequestException;
+import com.crm.sharedlib.core.exception.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import static java.util.Objects.isNull;

@@ -8,7 +8,7 @@ import com.crm.file.mapper.FileMetadataMapper;
 import com.crm.file.persistance.entity.FileContent;
 import com.crm.file.persistance.entity.FileMetadata;
 import com.crm.file.service.FileService;
-import com.crm.sharedlib.annotations.Facade;
+import com.crm.sharedlib.core.annotations.Facade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;

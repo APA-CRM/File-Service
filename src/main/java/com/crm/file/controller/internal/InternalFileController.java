@@ -2,8 +2,8 @@ package com.crm.file.controller.internal;
 
 
 import com.crm.file.facade.internal.InternalFileFacade;
-import com.crm.sharedlib.dto.request.CreateDefaultFileRequest;
-import com.crm.sharedlib.dto.response.FileIdResponse;
+import com.crm.sharedlib.core.dto.request.CreateDefaultFileRequest;
+import com.crm.sharedlib.core.dto.response.FileIdResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

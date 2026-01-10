@@ -2,8 +2,8 @@ package com.crm.file.facade.internal;
 
 import com.crm.file.persistance.entity.FileMetadata;
 import com.crm.file.service.FileService;
-import com.crm.sharedlib.annotations.Facade;
-import com.crm.sharedlib.dto.response.FileIdResponse;
+import com.crm.sharedlib.core.annotations.Facade;
+import com.crm.sharedlib.core.dto.response.FileIdResponse;
 import lombok.RequiredArgsConstructor;
 
 @Facade

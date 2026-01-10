@@ -1,7 +1,7 @@
 package com.crm.file.controller.internal;
 
 import com.crm.file.BaseIntegrationTest;
-import com.crm.sharedlib.dto.request.CreateDefaultFileRequest;
+import com.crm.sharedlib.core.dto.request.CreateDefaultFileRequest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
