@@ -12,6 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.UUID;
 
+import static com.crm.sharedlib.core.consts.CrmHeaders.USER_PERMISSIONS_HEADER_NAME;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -28,6 +29,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.JSON)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .get(BASE_URI + "/{fileId}", fileId)
                 .then()
@@ -51,6 +53,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.JSON)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .get(BASE_URI + "/{fileId}/content", fileId)
                 .then()
@@ -68,6 +71,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.JSON)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .get(BASE_URI + "/{fileId}", fileId)
                 .then()
@@ -85,6 +89,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.MULTIPART)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .multiPart("name", "Created file")
                 .multiPart("fileType", FileType.FILE)
@@ -112,6 +117,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.MULTIPART)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .multiPart("name", "Created file")
                 .multiPart("fileType", FileType.FILE)
@@ -132,6 +138,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.MULTIPART)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .multiPart("name", "Created file")
                 .multiPart("fileType", FileType.FILE)
@@ -153,6 +160,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.MULTIPART)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .multiPart("name", "Created directory")
                 .multiPart("fileType", FileType.DIRECTORY)
@@ -179,6 +187,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.MULTIPART)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .multiPart("name", "Created directory")
                 .multiPart("fileType", FileType.DIRECTORY)
@@ -199,6 +208,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.MULTIPART)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .multiPart("name", "Update directory")
                 .patch(BASE_URI + "/{fileId}", fileId)
@@ -223,6 +233,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.MULTIPART)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .multiPart("name", "Update file")
                 .multiPart("content", new ClassPathResource("image/file.png").getFile())
@@ -248,6 +259,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.MULTIPART)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .multiPart("name", "Update file")
                 .patch(BASE_URI + "/{fileId}", fileId)
@@ -271,6 +283,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.JSON)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .delete(BASE_URI + "/{fileId}", fileId)
                 .then()
@@ -286,6 +299,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.JSON)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .queryParam("forceDelete", true)
                 .delete(BASE_URI + "/{fileId}", fileId)
@@ -302,6 +316,7 @@ class FileControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.JSON)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .delete(BASE_URI + "/{fileId}", fileId)
                 .then()
