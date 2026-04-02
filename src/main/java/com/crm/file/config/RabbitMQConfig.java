@@ -12,8 +12,6 @@ import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.*;
 @EnableRabbit
 public class RabbitMQConfig extends BaseRabbitMQConfig {
 
-    private static final int DEFAULT_DELIVERY_LIMIT = 5;
-
     @Bean
     public TopicExchange fileServiceTopicExchanger() {
         return ExchangeBuilder
@@ -26,7 +24,6 @@ public class RabbitMQConfig extends BaseRabbitMQConfig {
     public Queue createRootDirQueue() {
         return QueueBuilder
                 .durable(CREATE_ROOT_DIR_QUEUE)
-                .deliveryLimit(5)
                 .build();
     }
 
@@ -34,7 +31,6 @@ public class RabbitMQConfig extends BaseRabbitMQConfig {
     public Queue orgRootDirCreatedQueue() {
         return QueueBuilder
                 .durable(ROOT_DIR_CREATED_REPLY_QUEUE)
-                .deliveryLimit(DEFAULT_DELIVERY_LIMIT)
                 .build();
     }
 
